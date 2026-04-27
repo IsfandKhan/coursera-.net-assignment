@@ -1,0 +1,68 @@
+@baseUrl = http://localhost:5000
+
+###
+# Health check
+GET {{baseUrl}}/
+
+###
+# Login with the mock test user
+# @name login
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "Password123!"
+}
+
+###
+# Save the JWT from the login response
+@token = {{login.response.body.accessToken}}
+
+###
+# Get all users
+GET {{baseUrl}}/users
+Authorization: Bearer {{token}}
+
+###
+# Get one user by id
+GET {{baseUrl}}/users/1
+Authorization: Bearer {{token}}
+
+###
+# Create a user
+POST {{baseUrl}}/users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Charlie",
+  "email": "charlie@example.com"
+}
+
+###
+# Update a user
+PUT {{baseUrl}}/users/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Alice Updated",
+  "email": "alice.updated@example.com"
+}
+
+###
+# Delete a user
+DELETE {{baseUrl}}/users/2
+Authorization: Bearer {{token}}
+
+###
+# Invalid create request example
+POST {{baseUrl}}/users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "",
+  "email": "not-an-email"
+}
